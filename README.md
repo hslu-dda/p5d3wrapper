@@ -12,7 +12,7 @@ to get started with some basics to write P5js libraries
 - scaleSqrt()
 - loadCSV()
 
-## Planed Additions
+## Planned Additions
 
 - [ ] Write basic documentation for the scales and that they are inspired by the P5 map function 
 - [ ] Creating (interpolated) [color scales](https://www.d3indepth.com/scales/#scales-with-continuous-input-and-discrete-output) based on d3 linearScale and others
