@@ -1,9 +1,6 @@
-# pd53.js
+# p5d3wrapper
 
-A [D3js](https://d3js.org/) wrapper for P5js made by lovely people at Data Design + Art, HSLU Luzern Switzerland
-
-See https://github.com/processing/p5.js/blob/main/contributor_docs/creating_libraries.md
-to get started with some basics to write P5js libraries
+A [D3js](https://d3js.org/) wrapper for P5js made by lovely people at Data Design + Art, HSLU Luzern Switzerland. Currently under early development.
 
 ## Current Functions
 
