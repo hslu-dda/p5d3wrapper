@@ -12,8 +12,17 @@ console.log(
 
 // map() insprired d3.scaleLinear function
 // d3 reference: https://d3js.org/d3-scale/linear
-p5.prototype.scaleLinear = function (value, domainStart, domainStop, rangeStart, rangeStop) {
-  const scale = d3.scaleLinear().domain([domainStart, domainStop]).range([rangeStart, rangeStop]);
+p5.prototype.scaleLinear = function (
+  value,
+  domainStart,
+  domainStop,
+  rangeStart,
+  rangeStop
+) {
+  const scale = d3
+    .scaleLinear()
+    .domain([domainStart, domainStop])
+    .range([rangeStart, rangeStop]);
   const mappedVal = scale(value);
   return mappedVal;
 };
@@ -30,13 +39,90 @@ p5.prototype.scalePoint = function (value, domainArray, rangeStart, rangeStop) {
   return mappedVal;
 };
 
-// d3 reference: 
+// d3 reference:
 // let rScale = d3.scaleSqrt().domain([0, 100]).range([0, 50]);
-p5.prototype.scaleSqrt = function(value, domainStart, domainStop, rangeStart, rangeStop) {
-    const scale = d3.scaleSqrt().domain([domainStart, domainStop]).range([rangeStart, rangeStop]);
-    const mappedVal = scale(value);
-    return mappedVal;
-}
+p5.prototype.scaleSqrt = function (
+  value,
+  domainStart,
+  domainStop,
+  rangeStart,
+  rangeStop
+) {
+  const scale = d3
+    .scaleSqrt()
+    .domain([domainStart, domainStop])
+    .range([rangeStart, rangeStop]);
+  const mappedVal = scale(value);
+  return mappedVal;
+};
+
+// d3 reference:
+//let quantizeScale = d3.scaleQuantize().domain([0, 100]).range(["lightblue", "orange", "lightgreen", "pink"]);
+/**
+ * Maps a value from one range to another using a quantize scale.
+ * @function scaleQuantize
+ * @param {number} value The value to map.
+ * @param {number} domainStart The start of the domain range.
+ * @param {number} domainStop The end of the domain range.
+ * @param {Array<any>} rangeArray An array representing the range values.
+ * @returns {number} The mapped value.
+ */
+p5.prototype.scaleQuantize = function (
+  value,
+  domainStart,
+  domainStop,
+  rangeArray
+) {
+  const scale = d3
+    .scaleQuantize()
+    .domain([domainStart, domainStop])
+    .range(rangeArray);
+  const mappedVal = scale(value);
+  return mappedVal;
+};
+
+// d3 reference:
+//var quantileScale = d3.scaleQuantile().domain(myData).range(['lightblue', 'orange', 'lightgreen']);
+/**
+ * Maps a value from one range to another using a quantile scale.
+ * @function scaleQuantile
+ * @param {number} value The value to map.
+ * @param {Array<any>} domainArray An array representing the domain values.
+ * @param {Array<any>} rangeArray An array representing the range values.
+ * @returns {number} The mapped value.
+ */
+p5.prototype.scaleQuantile = function (value, domainArray, rangeArray) {
+  const scale = d3.scaleQuantize().domain(domainArray).range(rangeArray);
+  const mappedVal = scale(value);
+  return mappedVal;
+};
+
+// d3 reference:
+//var thresholdScale = d3.scaleThreshold().domain([0, 30, 100]).range(["#ccc", "lightblue", "orange", "#ccc"]);
+/**
+ * Maps a value from one range to another using a threshold scale.
+ * @function scaleThreshold
+ * @param {number} value The value to map.
+ * @param {number} domainStart The start of the domain range.
+ * @param {number} domainStop The end of the domain range.
+ * @param {number} threshold The threshold value.
+ * @param {Array<any>} rangeArray An array representing the range values. The rangeArray can have up to four values: undershoot, <threshold, > threshold, overshoot
+ * @returns {number} The mapped value.
+ */
+p5.prototype.scaleThreshold = function (
+  value,
+  domainStart,
+  domainStop,
+  threshold,
+  rangeArray
+) {
+  const scale = d3
+    .scaleThreshold()
+    .domain([domainStart, threshold, domainStop])
+    .range(rangeArray);
+  const mappedVal = scale(value);
+  return mappedVal;
+};
 
 // third try
 // p5.prototype.registerPreloadMethod('loadCSV', p5.prototype);
