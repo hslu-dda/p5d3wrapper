@@ -1,4 +1,5 @@
 let data;
+let dataAsync;
 
 let years = [2000, 2006, 2012, 2020];
 let countries = ["Albania", "Angola", "Burundi", "Myanmar", "Lebanon", "Chad"];
@@ -12,15 +13,19 @@ let bottomBorder = 50;
 
 function preload() {
   // whoooooop a custom CSV function :)
-  data = loadCSV("goal11.csv");
+  data = loadCSV("goal11_1.csv");
+  dataAsync = loadD3CSV("goal11_1.csv");
 }
 
 function setup() {
+  console.log("setup");
+
   createCanvas(800, 400);
 
   noLoop();
 
-  console.log("data after preload was executed", data);
+  console.log("data after preload was executed", data, dataAsync);
+
   title = data[0].SeriesDescription;
 
   var quantizeScale = d3
@@ -33,17 +38,18 @@ function setup() {
       color(255, 0, 0),
     ]);
 
-  console.log(quantizeScale(10));
+  console.log("quantizeScale", quantizeScale(10));
 }
 
 function draw() {
+  console.log("data in draw", data, dataAsync);
   background(220);
   textAlign(CENTER, CENTER);
   text(title, width / 2, 20);
 
   // draw the points
-  for (let i = 0; i < data.length; i++) {
-    let d = data[i];
+  for (let i = 0; i < dataAsync.length; i++) {
+    let d = dataAsync[i];
 
     // call the new custom functions
     let x = scaleLinear(
