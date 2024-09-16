@@ -2,8 +2,8 @@ let data;
 let dataAsync;
 
 function preload() {
-  data = loadCSV("goal11_1.csv");
-  dataAsync = loadD3CSV("goal11_1.csv");
+  data = loadCSV("goal11_long.csv");
+  dataAsync = loadD3CSV("goal11_long.csv");
 }
 
 function setup() {
