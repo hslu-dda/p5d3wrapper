@@ -12,17 +12,8 @@ console.log(
 
 // map() insprired d3.scaleLinear function
 // d3 reference: https://d3js.org/d3-scale/linear
-p5.prototype.scaleLinear = function (
-  value,
-  domainStart,
-  domainStop,
-  rangeStart,
-  rangeStop
-) {
-  const scale = d3
-    .scaleLinear()
-    .domain([domainStart, domainStop])
-    .range([rangeStart, rangeStop]);
+p5.prototype.scaleLinear = function (value, domainStart, domainStop, rangeStart, rangeStop) {
+  const scale = d3.scaleLinear().domain([domainStart, domainStop]).range([rangeStart, rangeStop]);
   const mappedVal = scale(value);
   return mappedVal;
 };
@@ -31,27 +22,15 @@ p5.prototype.scaleLinear = function (
 // I guess this needs to receive arrays... ?
 p5.prototype.scalePoint = function (value, domainArray, rangeStart, rangeStop) {
   // extend: if domain & range not array log error & help
-  const scale = d3
-    .scalePoint()
-    .domain(domainArray)
-    .range([rangeStart, rangeStop]);
+  const scale = d3.scalePoint().domain(domainArray).range([rangeStart, rangeStop]);
   const mappedVal = scale(value);
   return mappedVal;
 };
 
 // d3 reference:
 // let rScale = d3.scaleSqrt().domain([0, 100]).range([0, 50]);
-p5.prototype.scaleSqrt = function (
-  value,
-  domainStart,
-  domainStop,
-  rangeStart,
-  rangeStop
-) {
-  const scale = d3
-    .scaleSqrt()
-    .domain([domainStart, domainStop])
-    .range([rangeStart, rangeStop]);
+p5.prototype.scaleSqrt = function (value, domainStart, domainStop, rangeStart, rangeStop) {
+  const scale = d3.scaleSqrt().domain([domainStart, domainStop]).range([rangeStart, rangeStop]);
   const mappedVal = scale(value);
   return mappedVal;
 };
@@ -67,16 +46,8 @@ p5.prototype.scaleSqrt = function (
  * @param {Array<any>} rangeArray An array representing the range values.
  * @returns {number} The mapped value.
  */
-p5.prototype.scaleQuantize = function (
-  value,
-  domainStart,
-  domainStop,
-  rangeArray
-) {
-  const scale = d3
-    .scaleQuantize()
-    .domain([domainStart, domainStop])
-    .range(rangeArray);
+p5.prototype.scaleQuantize = function (value, domainStart, domainStop, rangeArray) {
+  const scale = d3.scaleQuantize().domain([domainStart, domainStop]).range(rangeArray);
   const mappedVal = scale(value);
   return mappedVal;
 };
@@ -109,17 +80,8 @@ p5.prototype.scaleQuantile = function (value, domainArray, rangeArray) {
  * @param {Array<any>} rangeArray An array representing the range values. The rangeArray can have up to four values: undershoot, <threshold, > threshold, overshoot
  * @returns {number} The mapped value.
  */
-p5.prototype.scaleThreshold = function (
-  value,
-  domainStart,
-  domainStop,
-  threshold,
-  rangeArray
-) {
-  const scale = d3
-    .scaleThreshold()
-    .domain([domainStart, threshold, domainStop])
-    .range(rangeArray);
+p5.prototype.scaleThreshold = function (value, domainStart, domainStop, threshold, rangeArray) {
+  const scale = d3.scaleThreshold().domain([domainStart, threshold, domainStop]).range(rangeArray);
   const mappedVal = scale(value);
   return mappedVal;
 };
@@ -127,8 +89,75 @@ p5.prototype.scaleThreshold = function (
 // data loading
 //--------------------------------------------------------------
 
+// Alternative Approach, not sure if or what is better…
+/*usage:
+let dataAsync;
+function preload() {
+  dataAsync = loadD3CSV("data.csv");
+  dataAsync = loadD3Json("data.json");
+}*/
+
+// Register the custom preload function
+p5.prototype.registerPromisePreload({
+  target: p5.prototype,
+  method: "loadCSVAsync",
+  addCallbacks: true,
+  legacyPreloadSetup: {
+    method: "loadD3CSV",
+    createBaseObject: function () {
+      return [];
+    },
+  },
+});
+
+// Define the synchronous-style wrapper
+p5.prototype.loadD3CSV = function (path) {
+  let csv = [];
+  this.loadCSVAsync(path).then((data) => {
+    console.log("return from legacy", data);
+    csv.push(...data);
+  });
+  return csv;
+};
+
+// Define the async function
+p5.prototype.loadCSVAsync = function (path) {
+  return d3.csv(path, d3.autoType);
+};
+
+// Register the custom preload function
+p5.prototype.registerPromisePreload({
+  target: p5.prototype,
+  method: "loadJSONAsync",
+  addCallbacks: true,
+  legacyPreloadSetup: {
+    method: "loadD3JSON",
+    createBaseObject: function () {
+      return {};
+    },
+  },
+});
+
+// Define the async function
+p5.prototype.loadJSONAsync = function (path) {
+  return d3.json(path);
+};
+
+// Define the synchronous-style wrapper
+p5.prototype.loadD3JSON = function (path) {
+  let json = {};
+  this.loadJSONAsync(path).then((data) => {
+    console.log("return from legacy", data);
+    Object.assign(json, data);
+  });
+  return json;
+};
+
+//--------
+// Original Aproach
 // third try
 // p5.prototype.registerPreloadMethod('loadCSV', p5.prototype);
+// maybe buggy, sometimes empty array in setup
 
 p5.prototype.loadCSV = function (path, callback) {
   // Create an object which will clone data from async function and return it.
@@ -151,8 +180,10 @@ p5.prototype.loadCSV = function (path, callback) {
   return ret;
 };
 
+//-
+// Load json
+//-> not sure if same bug, check loadD3Json
 p5.prototype.registerMethod("preload", p5.prototype.loadJSON);
-
 p5.prototype.loadJSON = function (path, callback) {
   const p5Instance = this;
   const ret = [];
@@ -186,67 +217,4 @@ p5.prototype.loadJSON = function (path, callback) {
     });
 
   return ret; // This will be empty initially
-};
-
-// Alternative Approach, not sure if or what is better…
-/*usage:
-let dataAsync;
-function preload() {
-  dataAsync = loadD3CSV("data.csv");
-}*/
-
-// Register the custom preload function
-p5.prototype.registerPromisePreload({
-  target: p5.prototype,
-  method: "loadCSVAsync",
-  addCallbacks: true,
-  legacyPreloadSetup: {
-    method: "loadD3CSV",
-    createBaseObject: function () {
-      return [];
-    },
-  },
-});
-
-// Define the async function
-p5.prototype.loadCSVAsync = function (path) {
-  return d3.csv(path, d3.autoType);
-};
-
-// Define the synchronous-style wrapper
-p5.prototype.loadD3CSV = function (path) {
-  let csv = [];
-  this.loadCSVAsync(path).then((data) => {
-    console.log("return from legacy", data);
-    csv.push(...data);
-  });
-  return csv;
-};
-
-// Register the custom preload function
-p5.prototype.registerPromisePreload({
-  target: p5.prototype,
-  method: "loadJSONAsync",
-  addCallbacks: true,
-  legacyPreloadSetup: {
-    method: "loadD3JSON",
-    createBaseObject: function () {
-      return {};
-    },
-  },
-});
-
-// Define the async function
-p5.prototype.loadJSONAsync = function (path) {
-  return d3.json(path);
-};
-
-// Define the synchronous-style wrapper
-p5.prototype.loadD3JSON = function (path) {
-  let json = {};
-  this.loadJSONAsync(path).then((data) => {
-    console.log("return from legacy", data);
-    Object.assign(json, data);
-  });
-  return json;
 };

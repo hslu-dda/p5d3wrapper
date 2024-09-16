@@ -13,8 +13,8 @@ let bottomBorder = 50;
 
 function preload() {
   // whoooooop a custom CSV function :)
-  data = loadCSV("goal11_1.csv");
-  dataAsync = loadD3CSV("goal11_1.csv");
+  data = loadCSV("goal11_long.csv");
+  dataAsync = loadD3CSV("goal11_long.csv");
 }
 
 function setup() {
@@ -31,12 +31,7 @@ function setup() {
   var quantizeScale = d3
     .scaleQuantize()
     .domain([0, 100])
-    .range([
-      color(255, 0, 0),
-      color(255, 255, 0),
-      color(255, 0, 255),
-      color(255, 0, 0),
-    ]);
+    .range([color(255, 0, 0), color(255, 255, 0), color(255, 0, 255), color(255, 0, 0)]);
 
   console.log("quantizeScale", quantizeScale(10));
 }
@@ -52,13 +47,7 @@ function draw() {
     let d = dataAsync[i];
 
     // call the new custom functions
-    let x = scaleLinear(
-      d.TimePeriod,
-      2000,
-      2020,
-      leftBorder,
-      800 - rightBorder
-    );
+    let x = scaleLinear(d.TimePeriod, 2000, 2020, leftBorder, 800 - rightBorder);
     let y = scalePoint(d.GeoAreaName, countries, topBorder, 400 - bottomBorder);
     let f = scaleLinear(d.Value, 0, 100, "#006837", "#a50026");
     let r = scaleSqrt(d.Value, 0, 100, 0, 50);
@@ -89,12 +78,7 @@ function draw() {
   }
 
   for (let i = 0; i < 100; i++) {
-    let col = scaleQuantize(i, 0, 100, [
-      "lightblue",
-      "orange",
-      "lightgreen",
-      "pink",
-    ]);
+    let col = scaleQuantize(i, 0, 100, ["lightblue", "orange", "lightgreen", "pink"]);
     noStroke();
     let x = map(i, 0, 100, leftBorder, width - rightBorder);
     fill(col);
@@ -102,12 +86,7 @@ function draw() {
   }
 
   for (let i = 0; i < 100; i++) {
-    let col = scaleThreshold(i, 20, 80, 50, [
-      "#ccc",
-      "lightblue",
-      "orange",
-      "#ccc",
-    ]);
+    let col = scaleThreshold(i, 20, 80, 50, ["#ccc", "lightblue", "orange", "#ccc"]);
     noStroke();
     let x = map(i, 0, 100, leftBorder, width - rightBorder);
     fill(col);
