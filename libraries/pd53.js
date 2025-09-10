@@ -150,7 +150,7 @@ p5.prototype.registerPromisePreload({
   legacyPreloadSetup: {
     method: "loadD3JSON",
     createBaseObject: function () {
-      return {};
+      return [];
     },
   },
 });

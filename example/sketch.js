@@ -60,6 +60,7 @@ function draw() {
   for (let i = 0; i < countries.length; i++) {
     let d = countries[i];
     let y = scalePoint(d, countries, topBorder, 400 - bottomBorder);
+    console.log("scale point", d, y);
     fill(0);
     noStroke();
     textAlign(LEFT, CENTER);
